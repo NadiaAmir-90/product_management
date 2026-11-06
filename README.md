@@ -128,7 +128,7 @@ This is a server-rendered Django application. It returns HTML pages, not JSON.
 
 ## Tests
 
-`python manage.py test` covers:
+`uv run python manage.py test` covers:
 
 - `sync_db`: runs twice without duplicates, updates a changed row instead of
   adding one, skips invalid rows.
