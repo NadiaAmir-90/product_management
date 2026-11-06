@@ -1,0 +1,24 @@
+<div class="card shadow-sm">
+  <div class="card-header fw-semibold">Filter</div>
+
+  {% for section in filter_sections %}
+  <div class="card-body border-bottom">
+    <h2 class="h6 text-body-secondary text-uppercase small mb-2">{{ section.title }}</h2>
+    <div class="list-group list-group-flush" style="max-height: 16rem; overflow-y: auto;">
+      {% for option in section.options %}
+        <a href="{{ option.url }}"
+           class="list-group-item list-group-item-action py-1 border-0 rounded{% if option.active %} active{% endif %}"
+           {% if option.active %}aria-current="true"{% endif %}>
+          {{ option.label }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+
+  {% if is_filtered %}
+  <div class="card-body">
+    <a href="{% url 'products:list' %}" class="btn btn-outline-secondary btn-sm w-100">Clear all filters</a>
+  </div>
+  {% endif %}
+</div>

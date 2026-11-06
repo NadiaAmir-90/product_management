@@ -11,46 +11,64 @@
   {% endif %}
 </div>
 
-{% if page_obj %}
-<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
-  {% for product in page_obj %}
-  <div class="col">
-    <div class="card h-100 shadow-sm">
-      <img src="{% if product.image_url %}{{ product.image_url }}{% else %}https://placehold.co/300x400?text=No+Image{% endif %}"
-           class="card-img-top" alt="{{ product.title }}" loading="lazy"
-           style="height: 260px; object-fit: cover;"
-           onerror="this.onerror=null; this.src='https://placehold.co/300x400?text=No+Image';">
-      <div class="card-body">
-        <h2 class="h6 card-title">{{ product.title }}</h2>
-        <p class="fw-bold mb-1">{{ product.price|floatformat:2 }}</p>
-        <p class="mb-1">
-          {% if product.availability %}
-            <span class="badge text-bg-success">In stock</span>
-          {% else %}
-            <span class="badge text-bg-danger">Out of stock</span>
-          {% endif %}
-        </p>
-        <p class="text-body-secondary small mb-2">{{ product.category }}</p>
-        <a href="{{ product.product_url }}" target="_blank" rel="noopener noreferrer" class="small">View original page</a>
-      </div>
-      <div class="card-footer d-flex gap-2">
-        <a class="btn btn-sm btn-outline-primary flex-fill" href="{% url 'products:update' product.pk %}">Update</a>
-        <form method="post" action="{% url 'products:delete' product.pk %}" class="flex-fill"
-              onsubmit="return confirm('Delete {{ product.title|escapejs }}?');">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-sm btn-outline-danger w-100">Delete</button>
-        </form>
-      </div>
+<div class="row g-4">
+  <aside class="col-lg-3">
+    <div class="position-sticky" style="top: 1rem;">
+      {% include "products/includes/filter_sidebar.html" %}
     </div>
-  </div>
-  {% endfor %}
-</div>
+  </aside>
 
-{% include "products/includes/pagination.html" %}
-{% else %}
-<div class="text-center py-5 border rounded surface">
-  <h2 class="h5">No products yet</h2>
-  <p class="text-body-secondary mb-0">Run <code>python manage.py sync_db</code> to import products from the CSV file.</p>
+  <section class="col-lg-9">
+    {% if page_obj %}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-4">
+      {% for product in page_obj %}
+      <div class="col">
+        <div class="card h-100 shadow-sm">
+          <img src="{% if product.image_url %}{{ product.image_url }}{% else %}https://placehold.co/300x400?text=No+Image{% endif %}"
+               class="card-img-top" alt="{{ product.title }}" loading="lazy"
+               style="height: 260px; object-fit: cover;"
+               onerror="this.onerror=null; this.src='https://placehold.co/300x400?text=No+Image';">
+          <div class="card-body">
+            <h2 class="h6 card-title">{{ product.title }}</h2>
+            <p class="fw-bold mb-1">{{ product.price|floatformat:2 }}</p>
+            <p class="mb-1">
+              {% if product.availability %}
+                <span class="badge text-bg-success">In stock</span>
+              {% else %}
+                <span class="badge text-bg-danger">Out of stock</span>
+              {% endif %}
+            </p>
+            <p class="text-body-secondary small mb-2">{{ product.category }}</p>
+            <a href="{{ product.product_url }}" target="_blank" rel="noopener noreferrer" class="small">View original page</a>
+          </div>
+          <div class="card-footer d-flex gap-2">
+            <a class="btn btn-sm btn-outline-primary flex-fill" href="{% url 'products:update' product.pk %}">Update</a>
+            <form method="post" action="{% url 'products:delete' product.pk %}" class="flex-fill"
+                  onsubmit="return confirm('Delete {{ product.title|escapejs }}?');">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-danger w-100">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% include "products/includes/pagination.html" %}
+
+    {% elif is_filtered %}
+    <div class="text-center py-5 border rounded surface">
+      <h2 class="h5">No products match your filters</h2>
+      <p class="text-body-secondary">Try a different category or availability.</p>
+      <a href="{% url 'products:list' %}" class="btn btn-outline-primary btn-sm">Clear filters</a>
+    </div>
+
+    {% else %}
+    <div class="text-center py-5 border rounded surface">
+      <h2 class="h5">No products yet</h2>
+      <p class="text-body-secondary mb-0">Run <code>python manage.py sync_db</code> to import products from the CSV file.</p>
+    </div>
+    {% endif %}
+  </section>
 </div>
-{% endif %}
 {% endblock %}
