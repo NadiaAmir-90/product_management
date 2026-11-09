@@ -42,69 +42,91 @@ interface to browse, filter, correct and remove those products.
 | Configuration | django-environ (`.env` file) |
 | Frontend | Django templates + Bootstrap 5 (CDN) |
 
-## How to run:
+## How to Run
 
 ### 1. Clone the repository
+
 ```bash
 git clone https://github.com/<your-username>/product-management-django.git
 cd product-management-django
 ```
 
 ### 2. Create and activate a virtual environment
+
 ```bash
 python3 -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
+```
+
+**Linux / macOS:**
+```bash
+source .venv/bin/activate
 ```
 
 ### 3. Install dependencies
+
 ```bash
-uv sync
+python -m pip install --upgrade pip
+pip install -r requirements.txt
 ```
 
-### 5. Configure environment variables
+### 4. Configure environment variables
+
 ```bash
 cp .env.example .env
 ```
+
 Open `.env` and set a real `SECRET_KEY` and `DB_PASSWORD`.
+
 Generate a secret key with:
+
 ```bash
 python -c "import secrets; print(secrets.token_urlsafe(50))"
 ```
 
 | Variable | Purpose | Example |
 |---|---|---|
-| `SECRET_KEY` | Django signing key (keep private) | long random string |
+| `SECRET_KEY` | Django signing key (keep private) | Long random string |
 | `DEBUG` | Debug mode, `True` for development only | `True` |
-| `ALLOWED_HOSTS` | Comma-separated hosts the app may serve | `127.0.0.1,localhost` |
+| `ALLOWED_HOSTS` | Comma-separated hosts | `127.0.0.1,localhost` |
 | `DB_NAME` | PostgreSQL database name | `product_management` |
 | `DB_USER` | PostgreSQL user | `product_user` |
-| `DB_PASSWORD` | PostgreSQL password (keep private) | your own password |
+| `DB_PASSWORD` | PostgreSQL password (keep private) | Your own password |
 | `DB_HOST` | Database host | `127.0.0.1` |
 | `DB_PORT` | Database port | `5435` |
 
+### 5. Apply migrations
 
-### 6. Apply migrations
 ```bash
-uv run python manage.py migrate
+python manage.py migrate
 ```
-(If you change `models.py` later, run `python manage.py makemigrations` first.)
-
-### 7. Import the CSV data
 ```bash
-uv run python manage.py sync_db
+python manage.py makemigrations
+python manage.py migrate
 ```
 
-### 8. Run the tests
+### 6. Import the CSV data
+
 ```bash
-uv run python manage.py test
+python manage.py sync_db
 ```
 
+### 7. Run the tests
 
-### 10. Start the development server
 ```bash
-uv run python manage.py runserver
+python manage.py test
 ```
-Open http://127.0.0.1:8000/products/
+
+### 8. Start the development server
+
+```bash
+python manage.py runserver
+```
+
+Open the application:
+
+http://127.0.0.1:8000/
+
+
 
 ### 11. (Optional) Create an admin user
 ```bash
